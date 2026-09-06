@@ -27,6 +27,10 @@ Chaque membre gagne entre 15 et 25 XP lorsqu il envoie un message, avec un coold
 
 - `/rank` : affiche son niveau et son XP
 - `/leaderboard` : affiche les dix meilleurs membres
+- `/radio play station:<nom>` : cherche une station avec Radio Browser et la joue dans ton salon vocal
+- `/radio stop` : arrete la radio du serveur
+
+Le bot doit avoir les permissions `View Channel`, `Connect` et `Speak` dans le salon vocal. La lecture utilise FFmpeg fourni par la dependance `ffmpeg-static`.
 
 Le bot peut publier automatiquement le classement dans un salon chaque jour a midi. Ajoute dans `.env` :
 

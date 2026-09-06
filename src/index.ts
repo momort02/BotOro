@@ -11,9 +11,11 @@ import {
   type ChatInputCommandInteraction,
   type RESTPostAPIChatInputApplicationCommandsJSONBody
 } from "discord.js";
+import { generateDependencyReport } from "@discordjs/voice";
 import { pingCommand } from "./commands/ping.js";
 import { leaderboardCommand } from "./commands/leaderboard.js";
 import { rankCommand } from "./commands/rank.js";
+import { radioCommand } from "./commands/radio.js";
 import { levelStore } from "./level-store.js";
 import { getBlockedTermCount, hasBlockedTerm } from "./moderation.js";
 
@@ -27,7 +29,7 @@ if (!token || !clientId) {
   throw new Error("DISCORD_TOKEN et DISCORD_CLIENT_ID sont requis");
 }
 
-const commands = [pingCommand, rankCommand, leaderboardCommand];
+const commands = [pingCommand, rankCommand, leaderboardCommand, radioCommand];
 const commandMap = new Collection<string, (typeof commands)[number]>();
 for (const command of commands) {
   commandMap.set(command.data.name, command);
@@ -51,13 +53,19 @@ try {
 }
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates
+  ]
 });
 
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`Connecte en tant que ${readyClient.user.tag}`);
   console.log(guildId ? `Commandes synchronisees sur le serveur ${guildId}` : "Commandes globales synchronisees");
   console.log(`Filtre de moderation : ${getBlockedTermCount()} terme(s) configure(s)`);
+  console.log(generateDependencyReport());
 
   if (!leaderboardChannelId) {
     console.log("Leaderboard quotidien desactive : LEADERBOARD_CHANNEL_ID est absent");
